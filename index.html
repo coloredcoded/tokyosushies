@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sushi Store Layout & Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            padding-top: 70px; 
+            background-color: #f4f7f6;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        #nav-zone {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #e6c49e;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #nav-zone h2 {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between; 
+            align-items: flex-start; 
+        }
+
+        .main-content { width: 65%; }
+        .sidebar { width: 30%; }
+
+        .box {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            background-color: #fff;
+        }
+
+        .box h2, .dashboard-header h3 {
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-size: 18px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s;
+        }
+
+        .stat-card h4 {
+            color: #6c757d;
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .stat-card p {
+            font-size: 26px;
+            font-weight: bold;
+            color: #2c3e50;
+            letter-spacing: 0.5px;
+        }
+
+        #featured-items {
+            background: linear-gradient(135deg, #ffffff 0%, #fffbf7 100%);
+            border: 1px solid #f0e3d5;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .featured-card {
+            background-color: #ffffff;
+            border: 1px solid #e2d2c1;
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            transition: border-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .featured-card:hover {
+            border-color: #d35400;
+            transform: translateY(-2px);
+        }
+
+        .featured-tag {
+            display: inline-block;
+            background-color: #d35400;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        #featured-collection { margin-top: 20px; }
+
+        #product-catalog {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            padding-top: 15px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: scale(1.04);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+            border-color: #e74c3c;
+        }
+
+        .product-card.sale-badge::after,
+        .product-card.hot-badge::after {
+            position: absolute;
+            top: 15px;
+            right: -8px;
+            color: white;
+            padding: 5px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .product-card.sale-badge::after {
+            content: "SALE";
+            background-color: #e74c3c;
+        }
+
+        .product-card.hot-badge::after {
+            content: "HOT 🍣";
+            background-color: #ff9800;
+        }
+
+        .product-title {
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .product-desc {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #6c757d;
+            text-align: justify;
+        }
+
+        .product-image{
+            padding: 16%;
+            text-align: center;
+            width: 100%;
+            height: auto;
+        }
+
+        .announcements-box { background-color: #e3f2fd; border: 1px solid #bbdefb; }
+        .ads-box { background-color: #fff3e0; border: 1px solid #ffe0b2; }
+        #live-chat-support { background-color: #e8f5e9; border: 1px solid #c8e6c9; }
+        
+        aside .box p {
+            font-size: 14px;
+            line-height: 1.7;
+            letter-spacing: 0.3px;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .chat-btn {
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 12px 15px;
+            font-size: 13px; 
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .chat-btn:hover { background-color: #218838; }
+
+    </style>
+</head>
+<body>
+
+    <header id="nav-zone">
+        <h2>🍣 Tokyo Express Sushi Bar</h2>
+    </header>
+
+    <div class="content-container">
+
+        <main class="main-content">
+
+            <div class="box">
+                <div class="dashboard-header">
+                    <h3>📊 Kitchen Dashboard</h3>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h4>Today's Sales</h4>
+                        <p id="sales-stat">$1,840.00</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Active Visitors</h4>
+                        <p id="visitor-stat">58</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Pending Orders</h4>
+                        <p id="order-stat">9</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box" id="featured-items">
+                <h2>⭐ Chef's Featured Specials</h2>
+                <div class="featured-grid">
+                    <div class="featured-card">
+                        <span class="featured-tag">Limited Tasting</span>
+                        <div class="product-title">Omakase Deluxe Box</div>
+                        <div class="product-image"><img src="https://uploads.onecompiler.io/44t52j2ga/1789461968899/image_2026-09-15_164608890.png" width="100%" height="auto" alt="Nigiri"></div>
+                        <div class="product-price">$38.00</div>
+                        <div class="product-desc">Hand-curated selection of 12 premium seasonal nigiri pieces selected daily by Master Chef Ken.</div>
+                    </div>
+                    <div class="featured-card">
+                        <span class="featured-tag">Chef's Signature</span>
+                        <div class="product-title">Truffle Salmon Aburi</div>
+                        <div class="product-image"><img src="https://uploads.onecompiler.io/44t52j2ga/1789462562789/image_2026-09-15_165602781.png" width="100%" height="auto" alt="Nigiri"></div>
+                        <div class="product-price">$22.50</div>
+                        <div class="product-desc">Seared Atlantic salmon over vinegared rice drizzled with black truffle oil glaze and topped with ikura.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box" id="featured-collection">
+                <h2>🍱 Fresh Sushi Menu</h2>
+                
+                <div id="product-catalog">
+                    
+                    <div class="product-card hot-badge">
+                        <div class="product-title">Nigiri Sushi</div>
+                        <div class="product-image"><img src="https://uploads.onecompiler.io/44t52j2ga/1789456195675/image_2026-09-15_150955669.png" width="100%" height="auto" alt="Nigiri"></div>
+                        <div class="product-price">$12.99</div>
+                        <div class="product-desc">Hand-pressed mounds of seasoned vinegared rice topped with fresh slices of raw Atlantic salmon and premium bluefin tuna.</div>
+                    </div>
+
+                    <div class="product-card sale-badge">
+                        <div class="product-title">Dragon Uramaki</div>
+                        <div class="product-image"><img src="https://uploads.onecompiler.io/44t52j2ga/1789456520769/image_2026-09-15_151520762.png" width="100%" height="auto" alt="Dragon Uramaki"></div>
+                        <div class="product-price">$14.50</div>
+                        <div class="product-desc">Inside-out roll packed with crispy shrimp tempura and cucumber, wrapped with thin slices of avocado and eel sauce.</div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-title">California Roll</div>
+                        <div class="product-image"><img src="https://uploads.onecompiler.io/44t52j2ga/1789455903597/image_2026-09-15_150503586.png" width="100%" height="auto" alt="California Roll"></div>
+                        <div class="product-price">$10.99</div>
+                        <div class="product-desc">Classic sushi roll filled with real crab meat, creamy avocado, and crisp cucumber, coated with toasted sesame seeds.</div>
+                    </div>
+
+                    <div class="product-card hot-badge">
+                        <div class="product-title">Gunkan</div>
+                        <div class="product-image"><img src="https://uploads.onecompiler.io/44t52j2ga/1789456454948/image_2026-09-15_151414941.png" width="100%" height="auto" alt="Gunkan"></div>
+                        <div class="product-price">$13.25</div>
+                        <div class="product-desc">Battleship-style sushi wrapped in crisp nori seaweed, generously filled with seasoned salmon roe that bursts with flavor.</div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+
+        <aside class="sidebar">
+            <div class="box announcements-box">
+                <h2>📢 Kitchen Update</h2>
+                <br>
+                <p><strong>Fresh Catch:</strong> Today's salmon and tuna were freshly imported this morning!</p>
+            </div>
+
+            <div class="box ads-box">
+                <h2>🏷️ Special Offer</h2>
+                <br>
+                <p>Order any 3 rolls today and receive a free hot miso soup with your order!</p>
+            </div>
+
+            <div id="live-chat-support" class="box">
+                <h2>💬 Customer Support</h2>
+                <br>
+                <p>Status: <strong>Online 🟢</strong></p>
+                <p>Host Chef Ken is ready for catering queries.</p>
+                <button class="chat-btn">Start Chatting Now</button>
+            </div>
+        </aside>
+    </div>
+
+</body>
+</html>
